@@ -10,11 +10,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
+using MySqlConnector;
 
 namespace MutualFundsAPI
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -25,6 +28,7 @@ namespace MutualFundsAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<MySqlConnection>(_ => new MySqlConnection(Configuration["ConnectionStrings:DefaultConnection"]));
             services.AddControllers();
         }
 
@@ -39,6 +43,11 @@ namespace MutualFundsAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(policy =>
+            policy.WithOrigins("https://localhost:44350")
+            .AllowAnyMethod()
+            .WithHeaders(HeaderNames.ContentType));
 
             app.UseAuthorization();
 
