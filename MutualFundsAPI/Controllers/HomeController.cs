@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using MutualFundsAPI.Helpers;
 using MySqlConnector;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MutualFundsAPI.Controllers
@@ -14,118 +11,119 @@ namespace MutualFundsAPI.Controllers
     [ApiController]
     public class HomeController : ControllerBase
     {
-        private readonly MySqlConnection mySqlConnection;
-        private readonly ILogger<HomeController> _logger;
+        private readonly AppDb appDb;
 
-        public HomeController(ILogger<HomeController> logger, MySqlConnection connection)
+        public HomeController(AppDb db)
         {
-            _logger = logger;
-            mySqlConnection = connection;
+            appDb = db;
         }
 
         [HttpGet]
-        [Route("api/[controller]/GetTotalValue")]
-        public string GetTotalValue()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Route("api/[controller]/TotalValue")]
+        public async Task<ActionResult<string>> GetTotalValueAsync()
         {
             string totalValue = string.Empty;
-            mySqlConnection.Open();
+            await appDb.Connection.OpenAsync();
 
-            using (var cmd = mySqlConnection.CreateCommand())
+            using (var cmd = appDb.Connection.CreateCommand())
             {
                 cmd.CommandText = SqlQueries.TOTAL_PORTFOLIO_VALUE;
-                var result = cmd.ExecuteScalar();
+                var result = await cmd.ExecuteScalarAsync();
                 if (result != null)
                 {
                     totalValue = result.ToString();
                 }
             }
 
-            return totalValue;
+            return Ok(totalValue);
         }
 
         [HttpGet]
-        [Route("api/[controller]/GetValueTrend")]
-        public List<ValueTrend> GetPortfolioValueTrend(string numOfMonths)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Route("api/[controller]/ValueTrend/{numOfMonths?}")]
+        public async Task<ActionResult<List<ValueTrend>>> GetPortfolioValueTrendAsync(string numOfMonths)
         {
             List<ValueTrend> valueTrend = new List<ValueTrend>();
-            mySqlConnection.Open();
+            await appDb.Connection.OpenAsync();
 
-            using (var cmd = mySqlConnection.CreateCommand())
+            using (var cmd = appDb.Connection.CreateCommand())
             {
                 cmd.CommandText = SqlQueries.PORTFOLIO_VALUE_TREND;
                 cmd.Parameters.Add("@numofmonths", MySqlDbType.Int32).Value = numOfMonths;
                 cmd.Parameters.Add("@dayofweek", MySqlDbType.Int32).Value = 1 + (int)DateTime.Now.DayOfWeek;
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+                using (var reader = await cmd.ExecuteReaderAsync())
                 {
-                    valueTrend.Add(new ValueTrend()
+                    while (await reader.ReadAsync())
                     {
-                        Date = reader.GetValue(1).ToString(),
-                        Amount = Double.Parse(reader.GetValue(2).ToString())
-                    });
+                        valueTrend.Add(new ValueTrend()
+                        {
+                            Date = reader.GetValue(1).ToString(),
+                            Amount = Double.Parse(reader.GetValue(2).ToString())
+                        });
+                    }
                 }
-
-                reader.Close();
             }
 
-            return valueTrend;
+            return Ok(valueTrend);
         }
 
 
         [HttpGet]
-        [Route("api/[controller]/GetTopGainers")]
-        public List<FundPerformance> GetTopGainers(string numOfMonths)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Route("api/[controller]/TopGainers")]
+        public async Task<ActionResult<List<FundPerformance>>> GetTopGainersAsync()
         {
             List<FundPerformance> fundPerf = new List<FundPerformance>();
-            mySqlConnection.Open();
+            await appDb.Connection.OpenAsync();
 
-            using (var cmd = mySqlConnection.CreateCommand())
+            using (var cmd = appDb.Connection.CreateCommand())
             {
                 cmd.CommandText = SqlQueries.TOP_GAINERS;
-                cmd.Parameters.Add("@numofmonths", MySqlDbType.Int32).Value = numOfMonths;
                 cmd.Parameters.Add("@dayofweek", MySqlDbType.Int32).Value = 1 + (int)DateTime.Now.DayOfWeek;
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+                using (var reader = cmd.ExecuteReader())
                 {
-                    fundPerf.Add(new FundPerformance
+                    while (reader.Read())
                     {
-                        FundName = reader.GetValue(1).ToString(),
-                        Return = reader.GetValue(2).ToString()
-                    });
-                }
+                        fundPerf.Add(new FundPerformance
+                        {
+                            FundName = reader.GetValue(1).ToString(),
+                            Return = reader.GetValue(2).ToString()
+                        });
+                    }
 
-                reader.Close();
+                }
             }
 
-            return fundPerf;
+            return Ok(fundPerf);
         }
 
         [HttpGet]
-        [Route("api/[controller]/GetTopLosers")]
-        public List<FundPerformance> GetTopLosers(string numOfMonths)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Route("api/[controller]/TopLosers")]
+        public async Task<ActionResult<List<FundPerformance>>> GetTopLosersAsync()
         {
             List<FundPerformance> fundPerf = new List<FundPerformance>();
-            mySqlConnection.Open();
+            await appDb.Connection.OpenAsync();
 
-            using (var cmd = mySqlConnection.CreateCommand())
+            using (var cmd = appDb.Connection.CreateCommand())
             {
                 cmd.CommandText = SqlQueries.TOP_LOSERS;
-                cmd.Parameters.Add("@numofmonths", MySqlDbType.Int32).Value = numOfMonths;
                 cmd.Parameters.Add("@dayofweek", MySqlDbType.Int32).Value = 1 + (int)DateTime.Now.DayOfWeek;
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+                using (var reader = cmd.ExecuteReader())
                 {
-                    fundPerf.Add(new FundPerformance
+                    while (reader.Read())
                     {
-                        FundName = reader.GetValue(1).ToString(),
-                        Return = reader.GetValue(2).ToString()
-                    });
+                        fundPerf.Add(new FundPerformance
+                        {
+                            FundName = reader.GetValue(1).ToString(),
+                            Return = reader.GetValue(2).ToString()
+                        });
+                    }
                 }
-
-                reader.Close();
             }
 
-            return fundPerf;
+            return Ok(fundPerf);
         }
     }
 }
