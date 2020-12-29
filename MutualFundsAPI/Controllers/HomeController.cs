@@ -18,9 +18,13 @@ namespace MutualFundsAPI.Controllers
             appDb = db;
         }
 
+        /// <summary>
+        ///  Get the current total value of the portfolio
+        /// </summary>
+        /// <returns>Portfolio value as a string</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [Route("api/[controller]/TotalValue")]
+        [Route("api/[controller]/totalvalue")]
         public async Task<ActionResult<string>> GetTotalValueAsync()
         {
             string totalValue = string.Empty;
@@ -39,9 +43,14 @@ namespace MutualFundsAPI.Controllers
             return Ok(totalValue);
         }
 
+        /// <summary>
+        /// Get the value trend for the specified number of months. This is currently limited to 12 months.
+        /// </summary>
+        /// <param name="numOfMonths">Number of months of historical data to fetch</param>
+        /// <returns>Historical data trend as a pair of date and amount pair</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [Route("api/[controller]/ValueTrend/{numOfMonths?}")]
+        [Route("api/[controller]/valuetrend/{numOfMonths?}")]
         public async Task<ActionResult<List<ValueTrend>>> GetPortfolioValueTrendAsync(string numOfMonths)
         {
             List<ValueTrend> valueTrend = new List<ValueTrend>();
@@ -69,9 +78,13 @@ namespace MutualFundsAPI.Controllers
         }
 
 
+        /// <summary>
+        /// Get the top 6 performing funds for the last 12 months and the % change
+        /// </summary>
+        /// <returns>List of funds and their corresponding % change</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [Route("api/[controller]/TopGainers")]
+        [Route("api/[controller]/topgainers")]
         public async Task<ActionResult<List<FundPerformance>>> GetTopGainersAsync()
         {
             List<FundPerformance> fundPerf = new List<FundPerformance>();
@@ -98,9 +111,13 @@ namespace MutualFundsAPI.Controllers
             return Ok(fundPerf);
         }
 
+        /// <summary>
+        /// Get the worst 6 performing funds for the last 12 months and the % change
+        /// </summary>
+        /// <returns>List of funds and their corresponding % change</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [Route("api/[controller]/TopLosers")]
+        [Route("api/[controller]/toplosers")]
         public async Task<ActionResult<List<FundPerformance>>> GetTopLosersAsync()
         {
             List<FundPerformance> fundPerf = new List<FundPerformance>();

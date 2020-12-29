@@ -5,6 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
 using MutualFundsAPI.Helpers;
+using Swashbuckle.AspNetCore.Swagger;
+using System;
+using System.IO;
+using System.Reflection;
 
 namespace MutualFundsAPI
 {
@@ -23,6 +27,24 @@ namespace MutualFundsAPI
         {
             services.AddTransient<AppDb>(_ => new AppDb(Configuration["ConnectionStrings:DefaultConnection"]));
             services.AddControllers();
+            services.AddSwaggerGen(sg =>
+            {
+                sg.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Title = "Portfolio Tracker API",
+                    Version = "v1",
+                    Description = @"APIs for Portfolio Tracker Blazor WebAssembly app. The service performs all CRUD operations against a MySQL database. ",
+                    License = new Microsoft.OpenApi.Models.OpenApiLicense
+                    {
+                        Name = "Use under MIT",
+                        Url = new System.Uri("https://mit-license.org/")
+                    }
+                });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                sg.IncludeXmlComments(xmlPath);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -32,6 +54,13 @@ namespace MutualFundsAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(sg =>
+            {
+                sg.SwaggerEndpoint("/swagger/v1/swagger.json", "Portfolio Tracker API");
+                sg.RoutePrefix = string.Empty;
+            });
 
             app.UseHttpsRedirection();
 
