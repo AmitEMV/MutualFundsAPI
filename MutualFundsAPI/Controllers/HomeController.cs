@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using MutualFundsAPI.Helpers;
 using MySqlConnector;
 using System;
@@ -12,10 +13,12 @@ namespace MutualFundsAPI.Controllers
     public class HomeController : ControllerBase
     {
         private readonly AppDb appDb;
+        private readonly ILogger<HomeController> _logger;
 
-        public HomeController(AppDb db)
+        public HomeController(AppDb db, ILogger<HomeController> logger)
         {
             appDb = db;
+            _logger = logger;
         }
 
         /// <summary>
@@ -27,6 +30,8 @@ namespace MutualFundsAPI.Controllers
         [Route("api/[controller]/totalvalue")]
         public async Task<ActionResult<string>> GetTotalValueAsync()
         {
+            _logger.LogDebug("HomeController::GetTotalValueAsync: Fetching total portolio value");
+
             string totalValue = string.Empty;
             await appDb.Connection.OpenAsync();
 
@@ -39,6 +44,8 @@ namespace MutualFundsAPI.Controllers
                     totalValue = result.ToString();
                 }
             }
+
+            _logger.LogDebug("HomeController::GetTotalValueAsync: Fetching total portolio value successful");
 
             return Ok(totalValue);
         }
@@ -53,6 +60,7 @@ namespace MutualFundsAPI.Controllers
         [Route("api/[controller]/valuetrend/{numOfMonths?}")]
         public async Task<ActionResult<List<ValueTrend>>> GetPortfolioValueTrendAsync(string numOfMonths)
         {
+            _logger.LogDebug("HomeController::GetPortfolioValueTrendAsync: Fetching portolio value trend");
             List<ValueTrend> valueTrend = new List<ValueTrend>();
             await appDb.Connection.OpenAsync();
 
@@ -74,6 +82,7 @@ namespace MutualFundsAPI.Controllers
                 }
             }
 
+            _logger.LogDebug("HomeController::GetPortfolioValueTrendAsync: Fetching portolio value trend successful");
             return Ok(valueTrend);
         }
 
@@ -87,6 +96,8 @@ namespace MutualFundsAPI.Controllers
         [Route("api/[controller]/topgainers")]
         public async Task<ActionResult<List<FundPerformance>>> GetTopGainersAsync()
         {
+            _logger.LogDebug("HomeController::GetTopGainersAsync: Fetching top gainers");
+
             List<FundPerformance> fundPerf = new List<FundPerformance>();
             await appDb.Connection.OpenAsync();
 
@@ -108,6 +119,8 @@ namespace MutualFundsAPI.Controllers
                 }
             }
 
+            _logger.LogDebug("HomeController::GetTopGainersAsync: Fetching top gainers successful");
+
             return Ok(fundPerf);
         }
 
@@ -120,6 +133,8 @@ namespace MutualFundsAPI.Controllers
         [Route("api/[controller]/toplosers")]
         public async Task<ActionResult<List<FundPerformance>>> GetTopLosersAsync()
         {
+            _logger.LogDebug("HomeController::GetTopLosersAsync: Fetching top losers");
+
             List<FundPerformance> fundPerf = new List<FundPerformance>();
             await appDb.Connection.OpenAsync();
 
@@ -139,6 +154,8 @@ namespace MutualFundsAPI.Controllers
                     }
                 }
             }
+
+            _logger.LogDebug("HomeController::GetTopLosersAsync: Fetching top losers successful");
 
             return Ok(fundPerf);
         }
