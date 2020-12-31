@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
 using MutualFundsAPI.Helpers;
+using MutualFundsAPI.Implementation;
+using MutualFundsAPI.Interfaces;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.IO;
@@ -25,7 +27,8 @@ namespace MutualFundsAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<AppDb>(_ => new AppDb(Configuration["ConnectionStrings:DefaultConnection"]));
+            services.AddTransient<IDBConnector,AppDb>(_ => new AppDb(Configuration["ConnectionStrings:DefaultConnection"]));
+            services.AddScoped<IDashboardService, DashboardService>();
             services.AddControllers();
             services.AddSwaggerGen(sg =>
             {

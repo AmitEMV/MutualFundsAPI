@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using MutualFundsAPI.Helpers;
-using MySqlConnector;
-using System;
+using MutualFundsAPI.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,12 +10,12 @@ namespace MutualFundsAPI.Controllers
     [ApiController]
     public class HomeController : ControllerBase
     {
-        private readonly AppDb appDb;
+        private readonly IDashboardService _dashboardService;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(AppDb db, ILogger<HomeController> logger)
+        public HomeController(IDashboardService dashboardService, ILogger<HomeController> logger)
         {
-            appDb = db;
+            _dashboardService = dashboardService;
             _logger = logger;
         }
 
@@ -30,22 +28,11 @@ namespace MutualFundsAPI.Controllers
         [Route("api/[controller]/totalvalue")]
         public async Task<ActionResult<string>> GetTotalValueAsync()
         {
-            _logger.LogDebug("HomeController::GetTotalValueAsync: Fetching total portolio value");
+            _logger.LogDebug("In HomeController:GetTotalValueAsync");
 
-            string totalValue = string.Empty;
-            await appDb.Connection.OpenAsync();
+            string totalValue = await _dashboardService.GetTotalValueAsync();
 
-            using (var cmd = appDb.Connection.CreateCommand())
-            {
-                cmd.CommandText = SqlQueries.TOTAL_PORTFOLIO_VALUE;
-                var result = await cmd.ExecuteScalarAsync();
-                if (result != null)
-                {
-                    totalValue = result.ToString();
-                }
-            }
-
-            _logger.LogDebug("HomeController::GetTotalValueAsync: Fetching total portolio value successful");
+            _logger.LogDebug("Returning from HomeController:GetTotalValueAsync");
 
             return Ok(totalValue);
         }
@@ -60,29 +47,12 @@ namespace MutualFundsAPI.Controllers
         [Route("api/[controller]/valuetrend/{numOfMonths?}")]
         public async Task<ActionResult<List<ValueTrend>>> GetPortfolioValueTrendAsync(string numOfMonths)
         {
-            _logger.LogDebug("HomeController::GetPortfolioValueTrendAsync: Fetching portolio value trend");
-            List<ValueTrend> valueTrend = new List<ValueTrend>();
-            await appDb.Connection.OpenAsync();
+            _logger.LogDebug("In HomeController:GetPortfolioValueTrendAsync");
 
-            using (var cmd = appDb.Connection.CreateCommand())
-            {
-                cmd.CommandText = SqlQueries.PORTFOLIO_VALUE_TREND;
-                cmd.Parameters.Add("@numofmonths", MySqlDbType.Int32).Value = numOfMonths;
-                cmd.Parameters.Add("@dayofweek", MySqlDbType.Int32).Value = 1 + (int)DateTime.Now.DayOfWeek;
-                using (var reader = await cmd.ExecuteReaderAsync())
-                {
-                    while (await reader.ReadAsync())
-                    {
-                        valueTrend.Add(new ValueTrend()
-                        {
-                            Date = reader.GetValue(1).ToString(),
-                            Amount = Double.Parse(reader.GetValue(2).ToString())
-                        });
-                    }
-                }
-            }
+            List<ValueTrend> valueTrend = await _dashboardService.GetPortfolioValueTrendAsync(numOfMonths);
 
-            _logger.LogDebug("HomeController::GetPortfolioValueTrendAsync: Fetching portolio value trend successful");
+            _logger.LogDebug("Returning from HomeController:GetPortfolioValueTrendAsync");
+
             return Ok(valueTrend);
         }
 
@@ -96,30 +66,11 @@ namespace MutualFundsAPI.Controllers
         [Route("api/[controller]/topgainers")]
         public async Task<ActionResult<List<FundPerformance>>> GetTopGainersAsync()
         {
-            _logger.LogDebug("HomeController::GetTopGainersAsync: Fetching top gainers");
+            _logger.LogDebug("In HomeController:GetTopGainersAsync");
 
-            List<FundPerformance> fundPerf = new List<FundPerformance>();
-            await appDb.Connection.OpenAsync();
+            List<FundPerformance> fundPerf = await _dashboardService.GetTopGainersAsync();
 
-            using (var cmd = appDb.Connection.CreateCommand())
-            {
-                cmd.CommandText = SqlQueries.TOP_GAINERS;
-                cmd.Parameters.Add("@dayofweek", MySqlDbType.Int32).Value = 1 + (int)DateTime.Now.DayOfWeek;
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        fundPerf.Add(new FundPerformance
-                        {
-                            FundName = reader.GetValue(1).ToString(),
-                            Return = reader.GetValue(2).ToString()
-                        });
-                    }
-
-                }
-            }
-
-            _logger.LogDebug("HomeController::GetTopGainersAsync: Fetching top gainers successful");
+            _logger.LogDebug("Returning from HomeController:GetTopGainersAsync");
 
             return Ok(fundPerf);
         }
@@ -133,29 +84,11 @@ namespace MutualFundsAPI.Controllers
         [Route("api/[controller]/toplosers")]
         public async Task<ActionResult<List<FundPerformance>>> GetTopLosersAsync()
         {
-            _logger.LogDebug("HomeController::GetTopLosersAsync: Fetching top losers");
+            _logger.LogDebug("In HomeController:GetTopLosersAsync");
 
-            List<FundPerformance> fundPerf = new List<FundPerformance>();
-            await appDb.Connection.OpenAsync();
+            List<FundPerformance> fundPerf = await _dashboardService.GetTopLosersAsync();
 
-            using (var cmd = appDb.Connection.CreateCommand())
-            {
-                cmd.CommandText = SqlQueries.TOP_LOSERS;
-                cmd.Parameters.Add("@dayofweek", MySqlDbType.Int32).Value = 1 + (int)DateTime.Now.DayOfWeek;
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        fundPerf.Add(new FundPerformance
-                        {
-                            FundName = reader.GetValue(1).ToString(),
-                            Return = reader.GetValue(2).ToString()
-                        });
-                    }
-                }
-            }
-
-            _logger.LogDebug("HomeController::GetTopLosersAsync: Fetching top losers successful");
+            _logger.LogDebug("Returning from HomeController:GetTopLosersAsync");
 
             return Ok(fundPerf);
         }
