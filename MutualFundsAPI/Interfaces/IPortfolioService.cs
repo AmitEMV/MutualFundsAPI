@@ -6,7 +6,7 @@ namespace MutualFundsAPI.Interfaces
 {
     public interface IPortfolioService
     {
-        Task<(string,string)> GetInvestmentReturnsValueAsync();
+        Task<InvestmentStatus> GetInvestmentReturnsValueAsync();
 
         Task<List<FundDistribution>> GetFundDistributionAsync();
 

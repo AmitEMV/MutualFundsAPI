@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using MutualFundsAPI.Controllers;
 using MutualFundsAPI.Interfaces;
 using MutualFundsAPI.Test;
-using MutualFundsAPI.Test.Helpers;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -68,7 +68,7 @@ namespace MutualFundsAPI.Tests
             var okResult = await homeController.GetPortfolioValueTrendAsync("12");
             var actualValue = (OkObjectResult)okResult.Result;
 
-            CollectionAssert.AreEqual(expectedValue, (List<ValueTrend>)actualValue.Value, new ValueTrendComparer());
+            expectedValue.Should().BeEquivalentTo((List<ValueTrend>)actualValue.Value);
         }
 
         [Test]
@@ -93,7 +93,7 @@ namespace MutualFundsAPI.Tests
             var okResult = await homeController.GetTopGainersAsync();
             var actualValue = (OkObjectResult)okResult.Result;
 
-            CollectionAssert.AreEqual(expectedValue, (List<FundPerformance>)actualValue.Value, new FundPerformanceComparer());
+            expectedValue.Should().BeEquivalentTo((List<FundPerformance>)actualValue.Value);
         }
 
         [Test]
@@ -118,7 +118,7 @@ namespace MutualFundsAPI.Tests
             var okResult = await homeController.GetTopLosersAsync();
             var actualValue = (OkObjectResult)okResult.Result;
 
-            CollectionAssert.AreEqual(expectedValue, (List<FundPerformance>)actualValue.Value, new FundPerformanceComparer());
+            expectedValue.Should().BeEquivalentTo((List<FundPerformance>)actualValue.Value);
         }
     }
 }

@@ -4,14 +4,11 @@ using Moq;
 using MutualFundsAPI.Controllers;
 using MutualFundsAPI.Interfaces;
 using MutualFundsAPI.Models;
-using MutualFundsAPI.Test.Helpers;
 using MutualFundsAPI.Test.Services;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 
 namespace MutualFundsAPI.Test.Tests
 {
@@ -37,12 +34,16 @@ namespace MutualFundsAPI.Test.Tests
         [Test]
         public async Task InvestmentReturns_ReturnValuePass()
         {
-            (string, string) expectedValue = ("1000", "1500");
+            InvestmentStatus expectedValue = new InvestmentStatus
+            {
+                InvestmentValue = "1000",
+                CurrentValue = "1500"
+            };
 
             var okResult = await portfolioController.GetInvestmentReturnsValueAsync();
             var actualValue = (OkObjectResult)okResult.Result;
 
-            Assert.AreEqual(expectedValue, actualValue.Value);
+            expectedValue.Should().BeEquivalentTo((InvestmentStatus)actualValue.Value);
         }
 
         [Test]
@@ -67,7 +68,7 @@ namespace MutualFundsAPI.Test.Tests
             var okResult = await portfolioController.GetFundDistributionAsync();
             var actualValue = (OkObjectResult)okResult.Result;
 
-            CollectionAssert.AreEqual(expectedValue, (List<FundDistribution>)actualValue.Value, new FundDistributionComparer());
+            expectedValue.Should().BeEquivalentTo((List<FundDistribution>)actualValue.Value);
         }
 
         [Test]
@@ -94,7 +95,7 @@ namespace MutualFundsAPI.Test.Tests
             var okResult = await portfolioController.GetPortfolioSnapshotAsync();
             var actualValue = (OkObjectResult)okResult.Result;
 
-            CollectionAssert.AreEqual(expectedValue, (List<PortfolioSnapshot>)actualValue.Value, new PortfolioSnapshotComparer());
+            expectedValue.Should().BeEquivalentTo((List<PortfolioSnapshot>)actualValue.Value);
         }
     }
 }

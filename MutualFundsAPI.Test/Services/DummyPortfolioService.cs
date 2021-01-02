@@ -1,9 +1,6 @@
 ﻿using MutualFundsAPI.Interfaces;
 using MutualFundsAPI.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MutualFundsAPI.Test.Services
@@ -21,12 +18,15 @@ namespace MutualFundsAPI.Test.Services
                 }
             };
 
-            return await Task.FromResult<List<FundDistribution>>(fundDistributions);
+            return await Task.FromResult(fundDistributions);
         }
 
-        public async Task<(string, string)> GetInvestmentReturnsValueAsync()
+        public async Task<InvestmentStatus> GetInvestmentReturnsValueAsync()
         {
-            return await Task.FromResult<(string, string)>(("1000", "1500"));
+            return await Task.FromResult(new InvestmentStatus(){
+                InvestmentValue = "1000",
+                CurrentValue = "1500"
+            });
         }
 
         public async Task<List<PortfolioSnapshot>> GetPortfolioSnapshotAsync()
@@ -42,7 +42,7 @@ namespace MutualFundsAPI.Test.Services
                 }
             };
 
-            return await Task.FromResult<List<PortfolioSnapshot>>(portfolioSnapshots);
+            return await Task.FromResult(portfolioSnapshots);
         }
     }
 }

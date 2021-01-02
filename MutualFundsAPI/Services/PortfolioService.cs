@@ -21,11 +21,11 @@ namespace MutualFundsAPI.Implementation
             _logger = logger;
         }
 
-        public async Task<(string,string)> GetInvestmentReturnsValueAsync()
+        public async Task<InvestmentStatus> GetInvestmentReturnsValueAsync()
         {
             _logger.LogDebug("PortfolioService:GetInvestmentAndReturnsValueAsync: Fetching invested value and current value");
 
-            (string, string) InvestmentandReturnValues = ("","");
+            InvestmentStatus investmentStatus = new InvestmentStatus();
 
             await appDb.Connection.OpenAsync();
 
@@ -36,15 +36,15 @@ namespace MutualFundsAPI.Implementation
                 {
                     while (reader.Read())
                     {
-                        InvestmentandReturnValues = (reader.GetValue(0).ToString(), reader.GetValue(1).ToString());
+                        investmentStatus.InvestmentValue = reader.GetValue(0).ToString();
+                        investmentStatus.CurrentValue = reader.GetValue(1).ToString();
                     }
-
                 }
             }
 
             _logger.LogDebug("PortfolioService:GetInvestmentAndReturnsValueAsync: Investment values fetched successfully");
 
-            return InvestmentandReturnValues;
+            return investmentStatus;
         }
 
         public async Task<List<FundDistribution>> GetFundDistributionAsync()

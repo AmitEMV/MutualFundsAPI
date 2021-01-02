@@ -62,19 +62,19 @@ namespace MutualFundsAPI.Controllers
         /// <summary>
         ///  Check the growth of our investment by checking the current value
         /// </summary>
-        /// <returns>Tuple of invested amount and the current value of the investment</returns>
+        /// <returns>Invested amount and the current value of the investment</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Route("api/[controller]/investmentvalue")]
-        public async Task<ActionResult<(string,string)>> GetInvestmentReturnsValueAsync()
+        public async Task<ActionResult<InvestmentStatus>> GetInvestmentReturnsValueAsync()
         {
             _logger.LogDebug("In PortfolioController:GetInvestmentAndReturnsValueAsync");
 
-            (string,string) InvestedandReturnValues = await _portfolioService.GetInvestmentReturnsValueAsync();
+            InvestmentStatus investmentStatus = await _portfolioService.GetInvestmentReturnsValueAsync();
 
             _logger.LogDebug("Returning from PortfolioController:GetInvestmentAndReturnsValueAsync");
 
-            return Ok(InvestedandReturnValues);
+            return Ok(investmentStatus);
         }
 
     }

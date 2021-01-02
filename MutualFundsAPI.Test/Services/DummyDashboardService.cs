@@ -23,7 +23,7 @@ namespace MutualFundsAPI.Test
                 },
             };
 
-            return await Task.FromResult<List<ValueTrend>>(ValueTrend);
+            return await Task.FromResult(ValueTrend);
         }
 
         public async Task<List<FundPerformance>> GetTopGainersAsync()
@@ -37,7 +37,7 @@ namespace MutualFundsAPI.Test
                 }
             };
 
-            return await Task.FromResult<List<FundPerformance>>(fundPerformance);
+            return await Task.FromResult(fundPerformance);
         }
 
         public async Task<List<FundPerformance>> GetTopLosersAsync()
@@ -51,12 +51,12 @@ namespace MutualFundsAPI.Test
                 }
             };
 
-            return await Task.FromResult<List<FundPerformance>>(fundPerformance);
+            return await Task.FromResult(fundPerformance);
         }
 
         public async Task<string> GetTotalValueAsync()
         {
-            return await Task.FromResult<string>("1000");
+            return await Task.FromResult("1000");
         }
     }
 }
