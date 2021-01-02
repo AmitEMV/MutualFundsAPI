@@ -19,7 +19,7 @@ namespace MutualFundsAPI.Tests
         public HomeControllerTests()
         {
             var logger = Mock.Of<ILogger<HomeController>>();
-            dashboardService = new TestDashboardService();
+            dashboardService = new DummyDashboardService();
             homeController = new HomeController(dashboardService, logger);
         }
 
@@ -67,8 +67,6 @@ namespace MutualFundsAPI.Tests
 
             var okResult = await homeController.GetPortfolioValueTrendAsync("12");
             var actualValue = (OkObjectResult)okResult.Result;
-
-            Assert.AreEqual(expectedValue.Count, ((List<ValueTrend>)actualValue.Value).Count);
 
             CollectionAssert.AreEqual(expectedValue, (List<ValueTrend>)actualValue.Value, new ValueTrendComparer());
         }

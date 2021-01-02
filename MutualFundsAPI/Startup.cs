@@ -29,6 +29,7 @@ namespace MutualFundsAPI
         {
             services.AddTransient<IDBConnector,AppDb>(_ => new AppDb(Configuration["ConnectionStrings:DefaultConnection"]));
             services.AddScoped<IDashboardService, DashboardService>();
+            services.AddScoped<IPortfolioService, PortfolioService>();
             services.AddControllers();
             services.AddSwaggerGen(sg =>
             {

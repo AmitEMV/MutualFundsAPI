@@ -32,7 +32,7 @@ namespace MutualFundsAPI.Implementation
 
             using (var cmd = appDb.Connection.CreateCommand())
             {
-                cmd.CommandText = SqlQueries.PORTFOLIO_VALUE_TREND;
+                cmd.CommandText = SqlQueries.GET_PORTFOLIO_VALUE_TREND;
                 cmd.Parameters.Add("@numofmonths", MySqlDbType.Int32).Value = numOfMonths;
                 cmd.Parameters.Add("@dayofweek", MySqlDbType.Int32).Value = 1 + (int)DateTime.Now.DayOfWeek;
                 using (var reader = await cmd.ExecuteReaderAsync())
@@ -62,7 +62,7 @@ namespace MutualFundsAPI.Implementation
 
             using (var cmd = appDb.Connection.CreateCommand())
             {
-                cmd.CommandText = SqlQueries.TOP_GAINERS;
+                cmd.CommandText = SqlQueries.GET_TOP_GAINERS;
                 cmd.Parameters.Add("@dayofweek", MySqlDbType.Int32).Value = 1 + (int)DateTime.Now.DayOfWeek;
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -92,7 +92,7 @@ namespace MutualFundsAPI.Implementation
 
             using (var cmd = appDb.Connection.CreateCommand())
             {
-                cmd.CommandText = SqlQueries.TOP_LOSERS;
+                cmd.CommandText = SqlQueries.GET_TOP_LOSERS;
                 cmd.Parameters.Add("@dayofweek", MySqlDbType.Int32).Value = 1 + (int)DateTime.Now.DayOfWeek;
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -121,7 +121,7 @@ namespace MutualFundsAPI.Implementation
 
             using (var cmd = appDb.Connection.CreateCommand())
             {
-                cmd.CommandText = SqlQueries.TOTAL_PORTFOLIO_VALUE;
+                cmd.CommandText = SqlQueries.GET_TOTAL_PORTFOLIO_VALUE;
                 var result = await cmd.ExecuteScalarAsync();
                 if (result != null)
                 {

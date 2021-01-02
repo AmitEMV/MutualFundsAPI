@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MutualFundsAPI.Test
 {
-    public class TestDashboardService : IDashboardService
+    public class DummyDashboardService : IDashboardService
     {
         public async Task<List<ValueTrend>> GetPortfolioValueTrendAsync(string numOfMonths)
         {
