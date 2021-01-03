@@ -33,7 +33,7 @@ namespace MutualFundsAPI.Test
                 new FundPerformance()
                 {
                     FundName = "HDFC Fund",
-                    Return = "10"
+                    Return = 10
                 }
             };
 
@@ -47,16 +47,16 @@ namespace MutualFundsAPI.Test
                 new FundPerformance()
                 {
                     FundName = "HDFC Fund",
-                    Return = "-10"
+                    Return = -10
                 }
             };
 
             return await Task.FromResult(fundPerformance);
         }
 
-        public async Task<string> GetTotalValueAsync()
+        public async Task<double> GetTotalValueAsync()
         {
-            return await Task.FromResult("1000");
+            return await Task.FromResult(1000);
         }
     }
 }

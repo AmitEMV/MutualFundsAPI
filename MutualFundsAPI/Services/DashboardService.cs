@@ -71,7 +71,7 @@ namespace MutualFundsAPI.Implementation
                         fundPerf.Add(new FundPerformance
                         {
                             FundName = reader.GetValue(1).ToString(),
-                            Return = reader.GetValue(2).ToString()
+                            Return = double.Parse(reader.GetValue(2).ToString())
                         });
                     }
 
@@ -101,7 +101,7 @@ namespace MutualFundsAPI.Implementation
                         fundPerf.Add(new FundPerformance
                         {
                             FundName = reader.GetValue(1).ToString(),
-                            Return = reader.GetValue(2).ToString()
+                            Return = double.Parse(reader.GetValue(2).ToString())
                         });
                     }
                 }
@@ -112,11 +112,11 @@ namespace MutualFundsAPI.Implementation
             return fundPerf;
         }
 
-        public async Task<string> GetTotalValueAsync()
+        public async Task<double> GetTotalValueAsync()
         {
             _logger.LogDebug("In DashboardService:GetTotalValueAsync");
             
-            string totalValue = string.Empty;
+            double totalValue = 0;
             await appDb.Connection.OpenAsync();
 
             using (var cmd = appDb.Connection.CreateCommand())
@@ -125,7 +125,7 @@ namespace MutualFundsAPI.Implementation
                 var result = await cmd.ExecuteScalarAsync();
                 if (result != null)
                 {
-                    totalValue = result.ToString();
+                    totalValue = double.Parse(result.ToString());
                 }
             }
 

@@ -5,9 +5,9 @@ namespace MutualFundsAPI.Models
     public class InvestmentStatus
     {
         [Required]
-        public string InvestmentValue { get; set; }
+        public double InvestmentValue { get; set; }
 
         [Required]
-        public string CurrentValue { get; set; }
+        public double CurrentValue { get; set; }
     }
 }

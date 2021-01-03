@@ -33,7 +33,7 @@ namespace MutualFundsAPI.Tests
         [Test]
         public async Task TotalValue_ReturnValuePass()
         {
-            string expectedValue = "1000";
+            double expectedValue = 1000;
 
             var okResult = await homeController.GetTotalValueAsync();
             var actualValue =(OkObjectResult)okResult.Result; 
@@ -86,7 +86,7 @@ namespace MutualFundsAPI.Tests
                 new FundPerformance()
                 {
                     FundName = "HDFC Fund",
-                    Return = "10"
+                    Return = 10
                 }
             };
 
@@ -111,7 +111,7 @@ namespace MutualFundsAPI.Tests
                 new FundPerformance()
                 {
                     FundName = "HDFC Fund",
-                    Return = "-10"
+                    Return = -10
                 }
             };
 

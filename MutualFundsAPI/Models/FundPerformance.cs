@@ -8,6 +8,6 @@ namespace MutualFundsAPI.Controllers
         public string FundName { get; set; }
 
         [Required]
-        public string Return { get; set; }
+        public double Return { get; set; }
     }
 }

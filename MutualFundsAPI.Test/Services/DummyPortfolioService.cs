@@ -24,8 +24,8 @@ namespace MutualFundsAPI.Test.Services
         public async Task<InvestmentStatus> GetInvestmentReturnsValueAsync()
         {
             return await Task.FromResult(new InvestmentStatus(){
-                InvestmentValue = "1000",
-                CurrentValue = "1500"
+                InvestmentValue = 1000,
+                CurrentValue = 1500
             });
         }
 
@@ -36,9 +36,9 @@ namespace MutualFundsAPI.Test.Services
                 new PortfolioSnapshot()
                 {
                     FundName = "HDFC Fund",
-                    InvestmentValue = "1000",
-                    CurrentValue = "1500",
-                    Return = "50"
+                    InvestmentValue = 1000,
+                    CurrentValue = 1500,
+                    Return = 50
                 }
             };
 

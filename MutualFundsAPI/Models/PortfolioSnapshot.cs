@@ -8,12 +8,12 @@ namespace MutualFundsAPI.Models
         public string FundName { get; set; }
 
         [Required]
-        public string InvestmentValue { get; set; }
+        public double InvestmentValue { get; set; }
 
         [Required]
-        public string CurrentValue { get; set; }
+        public double CurrentValue { get; set; }
 
         [Required]
-        public string Return { get; set; }
+        public double Return { get; set; }
     }
 }

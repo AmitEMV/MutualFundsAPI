@@ -26,11 +26,11 @@ namespace MutualFundsAPI.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Route("api/[controller]/totalvalue")]
-        public async Task<ActionResult<string>> GetTotalValueAsync()
+        public async Task<ActionResult<double>> GetTotalValueAsync()
         {
             _logger.LogDebug("In HomeController:GetTotalValueAsync");
 
-            string totalValue = await _dashboardService.GetTotalValueAsync();
+            double totalValue = await _dashboardService.GetTotalValueAsync();
 
             _logger.LogDebug("Returning from HomeController:GetTotalValueAsync");
 

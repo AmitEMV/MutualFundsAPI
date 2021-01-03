@@ -36,8 +36,8 @@ namespace MutualFundsAPI.Test.Tests
         {
             InvestmentStatus expectedValue = new InvestmentStatus
             {
-                InvestmentValue = "1000",
-                CurrentValue = "1500"
+                InvestmentValue = 1000,
+                CurrentValue = 1500
             };
 
             var okResult = await portfolioController.GetInvestmentReturnsValueAsync();
@@ -86,9 +86,9 @@ namespace MutualFundsAPI.Test.Tests
                 new PortfolioSnapshot()
                 {
                     FundName = "HDFC Fund",
-                    InvestmentValue = "1000",
-                    CurrentValue = "1500",
-                    Return = "50"
+                    InvestmentValue = 1000,
+                    CurrentValue = 1500,
+                    Return = 50
                 }
             };
 

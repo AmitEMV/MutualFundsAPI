@@ -9,7 +9,7 @@ namespace MutualFundsAPI.Interfaces
 {
     public interface IDashboardService
     {
-        Task<string> GetTotalValueAsync();
+        Task<double> GetTotalValueAsync();
 
         Task<List<ValueTrend>> GetPortfolioValueTrendAsync(string numOfMonths);
 

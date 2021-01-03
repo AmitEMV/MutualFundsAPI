@@ -36,8 +36,8 @@ namespace MutualFundsAPI.Implementation
                 {
                     while (reader.Read())
                     {
-                        investmentStatus.InvestmentValue = reader.GetValue(0).ToString();
-                        investmentStatus.CurrentValue = reader.GetValue(1).ToString();
+                        investmentStatus.InvestmentValue = double.Parse(reader.GetValue(0).ToString());
+                        investmentStatus.CurrentValue = double.Parse(reader.GetValue(1).ToString());
                     }
                 }
             }
@@ -93,9 +93,9 @@ namespace MutualFundsAPI.Implementation
                         portfolioSnapshot.Add(new PortfolioSnapshot
                         {
                             FundName = reader.GetValue(0).ToString(),
-                            InvestmentValue = reader.GetValue(1).ToString(),
-                            CurrentValue = reader.GetValue(2).ToString(),
-                            Return = reader.GetValue(3).ToString()
+                            InvestmentValue = double.Parse(reader.GetValue(1).ToString()),
+                            CurrentValue = double.Parse(reader.GetValue(2).ToString()),
+                            Return = double.Parse(reader.GetValue(3).ToString())
                         });
                     }
 
