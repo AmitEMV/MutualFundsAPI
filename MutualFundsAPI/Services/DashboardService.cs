@@ -42,7 +42,7 @@ namespace MutualFundsAPI.Implementation
                         valueTrend.Add(new ValueTrend()
                         {
                             Date = reader.GetValue(1).ToString(),
-                            Amount = Double.Parse(reader.GetValue(2).ToString())
+                            Amount = reader.GetValue(2).GetDoubleValue()
                         });
                     }
                 }
@@ -71,7 +71,7 @@ namespace MutualFundsAPI.Implementation
                         fundPerf.Add(new FundPerformance
                         {
                             FundName = reader.GetValue(1).ToString(),
-                            Return = double.Parse(reader.GetValue(2).ToString())
+                            Return = reader.GetValue(2).GetDoubleValue()
                         });
                     }
 
@@ -101,7 +101,7 @@ namespace MutualFundsAPI.Implementation
                         fundPerf.Add(new FundPerformance
                         {
                             FundName = reader.GetValue(1).ToString(),
-                            Return = double.Parse(reader.GetValue(2).ToString())
+                            Return = reader.GetValue(2).GetDoubleValue()
                         });
                     }
                 }
@@ -123,10 +123,7 @@ namespace MutualFundsAPI.Implementation
             {
                 cmd.CommandText = SqlQueries.GET_TOTAL_PORTFOLIO_VALUE;
                 var result = await cmd.ExecuteScalarAsync();
-                if (result != null)
-                {
-                    totalValue = double.Parse(result.ToString());
-                }
+                totalValue = result.GetDoubleValue();
             }
 
             _logger.LogDebug("Returning from DashboardService:GetTotalValueAsync");
