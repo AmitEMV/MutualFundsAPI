@@ -11,5 +11,9 @@ namespace MutualFundsAPI.Interfaces
         Task<List<FundDistribution>> GetFundDistributionAsync();
 
         Task<List<PortfolioSnapshot>> GetPortfolioSnapshotAsync();
+
+        Task<bool> DeleteFundFromPortfolioAsync(int fundID, long portfolioId);
+
+        Task<bool> AddFundToPortfolioAsync(FundInfo fundInfo);
     }
 }

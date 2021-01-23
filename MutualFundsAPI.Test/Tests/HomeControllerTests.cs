@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using MutualFundsAPI.Controllers;
 using MutualFundsAPI.Interfaces;
+using MutualFundsAPI.Models;
 using MutualFundsAPI.Test;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -55,12 +56,14 @@ namespace MutualFundsAPI.Tests
             {
                 new ValueTrend()
                 {
-                    Amount = 100,
+                    CurrentValue = 100,
+                    InvestedValue = 80,
                     Date = "01-01-2019"
                 },
                 new ValueTrend()
                 {
-                    Amount = 150,
+                    CurrentValue = 150,
+                    InvestedValue = 80,
                     Date = "10-10-2019"
                 },
             };
@@ -119,6 +122,24 @@ namespace MutualFundsAPI.Tests
             var actualValue = (OkObjectResult)okResult.Result;
 
             expectedValue.Should().BeEquivalentTo((List<FundPerformance>)actualValue.Value);
+        }
+
+        [Test]
+        public async Task AvailableFunds_ReturnValuePass()
+        {
+            List<Funds> expectedValue = new List<Funds>()
+            {
+                new Funds()
+                {
+                    FundName = "HDFC Fund",
+                    Id = "1"
+                }
+            };
+
+            var okResult = await homeController.GetAvailableFundsAsync();
+            var actualValue = (OkObjectResult)okResult.Result;
+
+            expectedValue.Should().BeEquivalentTo((List<Funds>)actualValue.Value);
         }
     }
 }

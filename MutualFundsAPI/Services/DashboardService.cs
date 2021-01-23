@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using MutualFundsAPI.Controllers;
 using MutualFundsAPI.Helpers;
 using MutualFundsAPI.Interfaces;
+using MutualFundsAPI.Models;
 using MySqlConnector;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ namespace MutualFundsAPI.Implementation
 
             await appDb.Connection.OpenAsync();
 
+            // Get current value
             using (var cmd = appDb.Connection.CreateCommand())
             {
                 cmd.CommandText = SqlQueries.GET_PORTFOLIO_VALUE_TREND;
@@ -42,8 +44,25 @@ namespace MutualFundsAPI.Implementation
                         valueTrend.Add(new ValueTrend()
                         {
                             Date = reader.GetValue(1).ToString(),
-                            Amount = reader.GetValue(2).GetDoubleValue()
+                            CurrentValue = reader.GetValue(2).GetDoubleValue()
                         });
+                    }
+                }
+            }
+
+            // Get invested value
+            using (var cmd = appDb.Connection.CreateCommand())
+            {
+                cmd.CommandText = SqlQueries.GET_INVESTED_VALUE_TREND;
+                cmd.Parameters.Add("@numofmonths", MySqlDbType.Int32).Value = numOfMonths;
+                cmd.Parameters.Add("@dayofweek", MySqlDbType.Int32).Value = 1 + (int)DateTime.Now.DayOfWeek;
+                int i = 0;
+                using (var reader = await cmd.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        valueTrend[i].InvestedValue = reader.GetValue(1).GetDoubleValue();
+                        i++;
                     }
                 }
             }
@@ -129,6 +148,34 @@ namespace MutualFundsAPI.Implementation
             _logger.LogDebug("Returning from DashboardService:GetTotalValueAsync");
 
             return totalValue;
+        } 
+
+        public async Task<List<Funds>> GetAvailableFundsAsync()
+        {
+            _logger.LogDebug("In DashboardService:GetAvailableFundsAsync");
+
+            List<Funds> funds = new List<Funds>();
+            await appDb.Connection.OpenAsync();
+
+            using (var cmd = appDb.Connection.CreateCommand())
+            {
+                cmd.CommandText = SqlQueries.GET_AVAILABLE_FUNDS;
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        funds.Add(new Funds
+                        {
+                            Id = reader.GetValue(0).ToString(),
+                            FundName = reader.GetValue(1).ToString()
+                        });
+                    }
+                }
+            }
+
+            _logger.LogDebug("Returning from DashboardService:GetAvailableFundsAsync");
+
+            return funds;
         }
     }
 }

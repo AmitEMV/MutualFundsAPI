@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MutualFundsAPI.Controllers;
-using System;
+﻿using MutualFundsAPI.Models;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MutualFundsAPI.Interfaces
@@ -16,5 +13,7 @@ namespace MutualFundsAPI.Interfaces
         Task<List<FundPerformance>> GetTopGainersAsync();
 
         Task<List<FundPerformance>> GetTopLosersAsync();
+
+        Task<List<Funds>> GetAvailableFundsAsync();
     }
 }

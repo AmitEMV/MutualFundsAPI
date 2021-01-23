@@ -85,6 +85,8 @@ namespace MutualFundsAPI.Test.Tests
             {
                 new PortfolioSnapshot()
                 {
+                    FundId = 1,
+                    PortfolioId = 1000,
                     FundName = "HDFC Fund",
                     InvestmentValue = 1000,
                     CurrentValue = 1500,
@@ -96,6 +98,26 @@ namespace MutualFundsAPI.Test.Tests
             var actualValue = (OkObjectResult)okResult.Result;
 
             expectedValue.Should().BeEquivalentTo((List<PortfolioSnapshot>)actualValue.Value);
+        }
+
+        [Test]
+        public async Task DeleteFundFromPortfolioAsync_ReturnsOk()
+        {
+            var okResult = await portfolioController.DeleteFundFromPortfolioAsync(new PortfolioSnapshot());
+            Assert.IsInstanceOf<OkObjectResult>(okResult.Result);
+            var actualValue = (OkObjectResult)okResult.Result;
+            bool expectedValue = true;
+            expectedValue.Should().Equals(actualValue);
+        }
+
+        [Test]
+        public async Task AddFundToPortfolioAsync_ReturnsOk()
+        {
+            var okResult = await portfolioController.AddFundToPortfolioAsync(new FundInfo());
+            Assert.IsInstanceOf<OkObjectResult>(okResult.Result);
+            var actualValue = (OkObjectResult)okResult.Result;
+            bool expectedValue = true;
+            expectedValue.Should().Equals(actualValue);
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MutualFundsAPI.Interfaces;
+using MutualFundsAPI.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -89,6 +90,25 @@ namespace MutualFundsAPI.Controllers
             List<FundPerformance> fundPerf = await _dashboardService.GetTopLosersAsync();
 
             _logger.LogDebug("Returning from HomeController:GetTopLosersAsync");
+
+            return Ok(fundPerf);
+        }
+
+
+        /// <summary>
+        /// Get available funds to track in our portfolio
+        /// </summary>
+        /// <returns>List of fund ID and name</returns>
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Route("api/[controller]/funds")]
+        public async Task<ActionResult<List<Funds>>> GetAvailableFundsAsync()
+        {
+            _logger.LogDebug("In HomeController:GetAvailableFundsAsync");
+
+            List<Funds> fundPerf = await _dashboardService.GetAvailableFundsAsync();
+
+            _logger.LogDebug("Returning from HomeController:GetAvailableFundsAsync");
 
             return Ok(fundPerf);
         }

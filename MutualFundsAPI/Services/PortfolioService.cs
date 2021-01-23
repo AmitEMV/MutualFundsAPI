@@ -92,10 +92,12 @@ namespace MutualFundsAPI.Implementation
                     {
                         portfolioSnapshot.Add(new PortfolioSnapshot
                         {
-                            FundName = reader.GetValue(0).ToString(),
-                            InvestmentValue = reader.GetValue(1).GetDoubleValue(),
-                            CurrentValue = reader.GetValue(2).GetDoubleValue(),
-                            Return = reader.GetValue(3).GetDoubleValue()
+                            FundId = int.Parse(reader.GetValue(0).ToString()),
+                            PortfolioId = long.Parse(reader.GetValue(1).ToString()),
+                            FundName = reader.GetValue(2).ToString(),
+                            InvestmentValue = reader.GetValue(3).GetDoubleValue(),
+                            CurrentValue = reader.GetValue(4).GetDoubleValue(),
+                            Return = reader.GetValue(5).GetDoubleValue()
                         });
                     }
                 }
@@ -104,6 +106,50 @@ namespace MutualFundsAPI.Implementation
             _logger.LogDebug("PortfolioService:GetPortfolioSnapshotAsync: Portfolio snapshot fetched successfully");
 
             return portfolioSnapshot;
+        }
+
+        public async Task<bool> DeleteFundFromPortfolioAsync(int fundID, long portfolioId)
+        {
+            _logger.LogDebug($"PortfolioService:DeleteFundFromPortfolioAsync: Deleting {fundID} from portfolio {portfolioId}");
+
+            var status = false;
+            await appDb.Connection.OpenAsync();
+
+            using (var cmd = appDb.Connection.CreateCommand())
+            {
+                cmd.CommandText = SqlQueries.DELETE_FUND;
+                cmd.Parameters.Add("@portfolioId", MySqlConnector.MySqlDbType.Int64).Value = portfolioId;
+                cmd.Parameters.Add("@fundId", MySqlConnector.MySqlDbType.Int32).Value = fundID;
+                await cmd.ExecuteNonQueryAsync();
+                status = true;
+            }
+
+            _logger.LogDebug("PortfolioService:DeleteFundFromPortfolioAsync: Deleted fund from portfolio successfuly");
+
+            return status;
+        }
+
+        public async Task<bool> AddFundToPortfolioAsync(FundInfo fundInfo)
+        {
+            _logger.LogDebug($"PortfolioService:AddFundToPortfolioAsync: Adding new fund {fundInfo.FundName} to portfolio");
+
+            var status = false;
+            await appDb.Connection.OpenAsync();
+
+            using (var cmd = appDb.Connection.CreateCommand())
+            {
+                cmd.CommandText = SqlQueries.ADD_FUND;
+                cmd.Parameters.Add("@amcfundid", MySqlConnector.MySqlDbType.Int32).Value = fundInfo.FundId;
+                cmd.Parameters.Add("@units", MySqlConnector.MySqlDbType.Double).Value = fundInfo.NumberOfUnits;
+                cmd.Parameters.Add("@purchasetype", MySqlConnector.MySqlDbType.VarChar).Value = fundInfo.PurchaseType;
+                cmd.Parameters.Add("@purchasedate", MySqlConnector.MySqlDbType.Date).Value = fundInfo.PurchaseDate;
+                await cmd.ExecuteNonQueryAsync();
+                status = true;
+            }
+
+            _logger.LogDebug("PortfolioService:AddFundToPortfolioAsync: Added new fund to the portfolio successfuly");
+
+            return status;
         }
     }
 }

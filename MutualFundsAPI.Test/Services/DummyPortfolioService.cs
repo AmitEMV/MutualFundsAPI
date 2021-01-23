@@ -35,6 +35,8 @@ namespace MutualFundsAPI.Test.Services
             {
                 new PortfolioSnapshot()
                 {
+                    FundId = 1,
+                    PortfolioId = 1000,
                     FundName = "HDFC Fund",
                     InvestmentValue = 1000,
                     CurrentValue = 1500,
@@ -44,5 +46,16 @@ namespace MutualFundsAPI.Test.Services
 
             return await Task.FromResult(portfolioSnapshots);
         }
+
+        public async Task<bool> AddFundToPortfolioAsync(FundInfo fundInfo)
+        {
+            return await Task.FromResult(true);
+        }
+
+        public async Task<bool> DeleteFundFromPortfolioAsync(int fundID, long portfolioId)
+        {
+            return await Task.FromResult(true);
+        }
+
     }
 }

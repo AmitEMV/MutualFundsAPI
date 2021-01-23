@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MutualFundsAPI.Controllers
+namespace MutualFundsAPI.Models
 {
     public class FundPerformance
     {

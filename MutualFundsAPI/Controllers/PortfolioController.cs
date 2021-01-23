@@ -77,5 +77,41 @@ namespace MutualFundsAPI.Controllers
             return Ok(investmentStatus);
         }
 
+        /// <summary>
+        /// Add a new fund in the portfolio to track
+        /// </summary>
+        /// <returns>Success or failure status</returns>
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Route("api/[controller]/addfund")]
+        public async Task<ActionResult<bool>> AddFundToPortfolioAsync(FundInfo fundInfo)
+        {
+            _logger.LogDebug("In PortfolioController:AddFundToPortfolioAsync");
+
+            bool status = await _portfolioService.AddFundToPortfolioAsync(fundInfo);
+
+            _logger.LogDebug("Returning from PortfolioController:AddFundToPortfolioAsync");
+
+            return Ok(status);
+        }
+
+        /// <summary>
+        /// Delete a fund from our tracking portfolio
+        /// </summary>
+        /// <returns>Success or failure status</returns>
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Route("api/[controller]/deletefund")]
+        public async Task<ActionResult<bool>> DeleteFundFromPortfolioAsync(PortfolioSnapshot portfolioSnapshot)
+        {
+            _logger.LogDebug("In PortfolioController:DeleteFundFromPortfolioAsync");
+
+            bool status = await _portfolioService.DeleteFundFromPortfolioAsync(portfolioSnapshot.FundId, portfolioSnapshot.PortfolioId);
+
+            _logger.LogDebug("Returning from PortfolioController:DeleteFundFromPortfolioAsync");
+
+            return Ok(status);
+        }
+
     }
 }
