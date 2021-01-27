@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -31,6 +32,13 @@ namespace MutualFundsAPI
             services.AddScoped<IDashboardService, DashboardService>();
             services.AddScoped<IPortfolioService, PortfolioService>();
             services.AddControllers();
+            //services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme).AddCertificate(options =>
+            //{
+            //    new CertificateAuthenticationOptions()
+            //    {
+            //        AllowedCertificateTypes = CertificateTypes.All
+            //    };
+            //});
             services.AddSwaggerGen(sg =>
             {
                 sg.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
@@ -70,12 +78,10 @@ namespace MutualFundsAPI
                 sg.RoutePrefix = string.Empty;
             });
 
-            app.UseHttpsRedirection();
-
             app.UseRouting();
 
             app.UseCors(policy =>
-            policy.WithOrigins("https://localhost:44350")
+            policy.AllowAnyOrigin()
             .AllowAnyMethod()
             .WithHeaders(HeaderNames.ContentType));
 
