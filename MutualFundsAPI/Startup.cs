@@ -28,9 +28,21 @@ namespace MutualFundsAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IDBConnector,AppDb>(_ => new AppDb(Configuration["ConnectionStrings:DefaultConnection"]));
+            services.AddTransient<IDBConnector, AppDb>(_ => new AppDb(Configuration["ConnectionStrings:DefaultConnection"]));
             services.AddScoped<IDashboardService, DashboardService>();
             services.AddScoped<IPortfolioService, PortfolioService>();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("policy",
+                                  builder =>
+                                  {
+                                      builder.AllowAnyOrigin()
+                                             .AllowAnyMethod()
+                                             .AllowAnyHeader();
+                                  });
+            });
+
             services.AddControllers();
             //services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme).AddCertificate(options =>
             //{
@@ -80,10 +92,7 @@ namespace MutualFundsAPI
 
             app.UseRouting();
 
-            app.UseCors(policy =>
-            policy.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .WithHeaders(HeaderNames.ContentType));
+            app.UseCors("policy");
 
             app.UseAuthorization();
 
